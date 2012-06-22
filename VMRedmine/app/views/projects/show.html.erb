@@ -1,0 +1,26 @@
+<div id="dvShowProject">
+  <p id="notice"><%= notice %></p>
+  
+  <p>
+    <b>Projectname:</b>
+    <%= @project.projectname %>
+  </p>
+  
+  <p>
+    <b>Subprojectof:</b>
+    <%= @project.subprojectof %>
+  </p>
+  
+  <p>
+    <b>Description:</b>
+    <%= @project.description %>
+  </p>
+  
+  <p>
+    <b>Identifier:</b>
+    <%= @project.identifier %>
+  </p>
+</div>
+
+<%= link_to 'Edit', edit_project_path(@project) %> |
+<%= link_to 'Back', projects_path %>

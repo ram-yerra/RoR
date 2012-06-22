@@ -1,0 +1,130 @@
+
+<div style="clear:both;"></div>
+<div id="somediv"></div>
+<div class="Flexgrid">    
+  <script type="text/javascript">
+    var idt=0;  
+    var $dialog;
+    var $editDialog;
+    var $showDialog;
+    var id;
+    $(document).ready(function(){	
+    	$("#flex1").flexigrid({
+    			url: 'http://localhost:3000/syscodes/syscode_data',
+    			dataType: 'json',
+    			colModel : [
+    				{display: 'Edit', name : 'edit', width : 20, sortable : true, align: 'center',process: EditSyscode},
+    				{display: 'Delete', name : 'delete', width : 30, sortable : true, align: 'center'},
+    				{display: 'ID', name : 'id', width : 60, sortable : true, align: 'center',process: ShowChilds},
+            {display: 'Syscode', name : 'syscode', width : 90, sortable : true, align: 'left',process: ShowSyscode}
+    				],
+    			buttons : [
+    				{name: 'Add Syscode', bclass: 'add', onpress : AddSyscode},
+    				{separator: true}
+    				],
+    			searchitems : [
+    				{display: 'ID', name : 'id'},
+    				{display: 'Syscode', name : 'syscode', isdefault: true}
+    				],
+    			sortname: "id",
+    			sortorder: "asc",
+    			usepager: true,
+    			useRp: true,
+    			rp: 10,			
+    			showTableToggleBtn: true,
+    			width: 380,
+    			height: 400
+    			});
+         $dialog = $('<div></div>')
+                         .load('<%= url_for new_syscode_path %> #dvSyscodeForm')
+                         .dialog({
+                               autoOpen: false,
+                               width:400,
+                               height:560,
+                               title: 'Add Syscode'
+                         });       
+    });
+    
+    function AddSyscode()
+    {                
+      $dialog.dialog('open'); 
+    }
+
+    function EditSyscode(celDiv, id) {
+        	 $(celDiv).click(function() {
+                idt=$(this).closest('tr').find('td:nth(2)')[0].textContent;
+                var i = document.createElement('a'); 
+                var url = '<%= edit_syscode_path('idt') %> #dvEditSyscode'; //new change
+                url = url.replace('idt',""+(idt*1));   //new change
+                $editDialog = $('<div></div>')
+                         .load(url)
+                         .dialog({
+                               autoOpen: false,
+                               width:400,
+                               height:585,  
+                               title: 'Edit Syscode'
+                         });    
+              $editDialog.dialog('open');
+           });  
+    }
+
+    function ShowSyscode(celDiv, id) {
+           $(celDiv).addClass("link");
+        	 $(celDiv).click(function() {
+                idt=$(this).closest('tr').find('td:nth(2)')[0].textContent;
+                scode=$(this).closest('tr').find('td:nth(3)')[0].textContent;
+                var i = document.createElement('a'); 
+                var url = '<%= syscode_path('idt') %> #dvShowSyscode'; //new change
+                url = url.replace('idt',""+(idt*1));   //new change
+                $showDialog = $('<div></div>')
+                         .load(url)
+                         .dialog({
+                               autoOpen: false,
+                               width:400,
+                               height:350,  
+                               title:scode
+                         });    
+              $showDialog.dialog('open');
+           });  
+    }
+    
+    function ShowChilds(celDiv, id) {
+        $(celDiv).addClass("link");
+        	 $(celDiv).click(function() {
+              idt=$(this).closest('tr').find('td:nth(2)')[0].textContent;	
+              alert(idt);
+              $("#flex2").flexigrid({
+            			url: 'http://localhost:3000/syscodes/syscode_display_data',
+            			dataType: 'json',
+            			colModel : [
+            				{display: 'Edit', name : 'edit', width : 20, sortable : true, align: 'center',process: EditSyscode},
+            				{display: 'Delete', name : 'delete', width : 30, sortable : true, align: 'center'},
+            				{display: 'ID', name : 'id', width : 60, sortable : true, align: 'center'},
+                    {display: 'Syscode', name : 'syscode', width : 90, sortable : true, align: 'left',process: ShowSyscode},
+                    {display: 'Syscode Desc', name : 'syscodedesc', width : 90, sortable : true, align: 'left'},
+                    {display: 'Foreign Key', name : 'foreignkey', width : 60, sortable : true, align: 'center',},
+                    {display: 'Is Active', name : 'isactive', width : 60, sortable : true, align: 'center',}
+            				],
+            			buttons : [
+        
+            				],
+            			searchitems : [
+            				{display: 'ID', name : 'id'},
+            				{display: 'Syscode', name : 'syscode', isdefault: true}
+            				],
+            			sortname: "id",
+            			sortorder: "asc",
+            			usepager: true,
+            			useRp: true,
+            			rp: 10,			
+            			showTableToggleBtn: true,
+            			width: 580,
+            			height: 424
+            });
+           });  
+    }
+
+  </script>
+<table id="flex1" style="display:none"></table>
+
+</div>

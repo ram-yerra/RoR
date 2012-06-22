@@ -1,0 +1,67 @@
+<div id="dvSyscodeForm">
+  <%= form_for(@syscode) do |f| %>
+    <% if @syscode.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@syscode.errors.count, "error") %> prohibited this syscode from being saved:</h2>
+  
+        <ul>
+        <% @syscode.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div id="hideId">
+      <div class="field">
+        <%= f.label :id %><br />
+        <%= f.number_field :id %>
+      </div>
+    </div>
+    <div id="selectParent">
+      <div class="field">
+        <%= f.label :fksyscodeparent %><br />
+        <%= f.select :fksyscodeparent, Syscode.where("fksyscodeparent = '0'").map {|s| ["#{s.syscode}", s.id ]},:include_blank => "-Select Parent-" %>
+      </div>
+    </div>
+    <div id="parentField">
+      <div class="field">
+          <%= f.label :fksyscodeparent %><br />
+          <%= f.number_field :fksyscodeparent, :id => "parent", :value => "0" %>         
+      </div>
+    </div>
+    <div class="field">
+      <%= f.label :syscode %><br />
+      <%= f.text_field :syscode %>
+    </div>
+    <div class="field">
+      <%= f.label :syscode_desc %><br />
+      <%= f.text_field :syscode_desc %>
+    </div>
+    <div id="hideSyscodeFields">
+      <div class="field">
+        <%= f.label :isactive %><br />
+        <%= f.number_field :isactive, :value => "1" %>
+      </div>
+      <div class="field">
+        <%= f.label :createdby %><br />
+        <%= f.number_field :createdby %>
+      </div>
+      <div class="field">
+        <%= f.label :datecreated %><br />
+        <%= f.datetime_select :datecreated %>
+      </div>
+      <div class="field">
+        <%= f.label :datemodified %><br />
+        <%= f.datetime_select :datemodified %>
+      </div>
+      <div class="field">
+        <%= f.label :modifiedby %><br />
+        <%= f.number_field :modifiedby %>
+      </div> 
+    </div>
+    <div class="actions" style="float:right;">
+      <%= f.submit %>
+    </div>
+  <% end %>
+</div>

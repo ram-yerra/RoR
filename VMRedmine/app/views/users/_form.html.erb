@@ -1,0 +1,56 @@
+<div id="dvUserForm">
+  <%= form_for(@user) do |f| %>
+    <% if @user.errors.any? %>
+      <div id="error_explanation" class="errorBox">
+        <fieldset>
+          <h2><img src="../assets/error.png" style="padding-bottom:6px;" /> <%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+    
+          <ul>
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+          </ul>
+        </fieldset>
+      </div>
+    <% end %>   
+  <div id="user_form">
+    <h3>Information</h3>
+    <div class="box tabular adjust form-inputs">
+      <div class="field">
+        <%= f.label :login, :class => 'required' %>
+        <%= f.text_field :login, :required => true, :size => 25, :id =>'txtLogin'  %>  
+      </div>
+      <div class="field">
+        <%= f.label :firstname, :class => 'required' %>
+        <%= f.text_field :firstname, :required => true, :id =>'txtFirstName'  %>
+      </div>
+      <div class="field">
+        <%= f.label :lastname, :class => 'required' %>
+        <%= f.text_field :lastname, :required => true, :id =>'txtLastName' %>
+      </div>
+      <div class="field">
+        <%= f.label :email, :class => 'required' %>
+        <%= f.text_field :email, :required => true, :id =>'txtEmail'  %>
+      </div>
+      <div class="field">
+        <%= f.label :language %>
+        <%= f.text_field :language, :id =>'txtLanguage' %>
+      </div>
+    </div>
+    <h3>Authentication</h3>
+    <div class="box tabular">
+      <div class="field">
+        <%= f.label :password, :class => 'required' %>
+        <%= f.password_field :password, :required => true, :size => 25, :id =>'txtPassword'  %>
+      </div>
+      <div class="field">
+        <%= f.label :confirmation, :class => 'required' %>
+        <%= f.password_field :confirmation, :required => true, :size => 25, :id =>'txtConfirmation'  %>
+      </div>
+    </div>
+    <div class="actions" style="float:right;">
+      <%= f.submit %>
+    </div>
+  </div> 
+  <% end %>
+</div>

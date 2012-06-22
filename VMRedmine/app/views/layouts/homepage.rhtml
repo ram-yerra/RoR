@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;.
+charset=iso-8859-1" />
+<meta http-equiv="Content-Language" content="en-us" />
+<title>VMOKSHA Project Info System</title>
+<%= stylesheet_link_tag 'application', :media => 'all' %>
+<%= stylesheet_link_tag 'rtl', :media => 'all' %>
+</head>
+<body class="body_css_classes">
+<div id="wrapper">
+<div id="wrapper2">
+  <div id="top-menu">
+      <div id="account">
+       <%= link_to 'Home', {}, :class => 'menu icon-home' %>
+       <%= link_to 'Users', {:controller=>"users", :action => "index" }, :class => 'menu icon-user' %>
+       <%= link_to 'Projects', projects_path, :class => 'menu icon-projects' %>
+       <%= link_to 'Administration', {}, :class => 'menu icon-admin' %>
+       <%= link_to 'Help', {}, :class => 'menu icon-help' %>
+      </div>    
+  </div>
+
+<div id="header">
+    <div id="quick-search">
+        asdasd
+    </div>
+    <h1>VMoksha Project Management</h1>
+    <div id="main-menu">
+        <ul><li><a class="rb-statistics" href="/redmine/rb/statistics">Scrum statistics</a></li>
+<li><a class="blogs" href="/redmine/blogs">Blogs</a></li></ul>
+    </div>
+
+</div>
+
+    
+    <div id="content">
+        <div id="list" style="float:left;clear:both;"><%= yield %></div>
+        
+
+				<div style="clear:both;"></div>
+    </div>
+</div>
+
+<div id="ajax-indicator" style="display:none;"><span></span></div>
+	
+<div id="footer">
+  <div class="bgl"><div class="bgr">
+    Powered by Ruby on Rails &copy; 2011-2012 VMOKSHA 
+  </div></div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

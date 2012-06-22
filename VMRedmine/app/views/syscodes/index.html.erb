@@ -1,0 +1,270 @@
+<script type="text/javascript">
+    var idt=0;  
+    var $parentDialog;
+    var $childDialog;
+    var $editDialog;
+    var $showDialog;
+    var id;
+    var identity=0;
+    var sccodedesc;
+    var parentSyscodeVal; 
+    $(document).ready(function(){	    	
+      $("#flex1").flexigrid({
+    			url: 'http://localhost:3000/syscodes/syscode_data',
+    			dataType: 'json',
+    			colModel : [
+    				{display: '<input type="checkbox" id="chkAllFile" onclick="javascript:CheckAllParent(this);"/>', name: '', width: 20, sortable: false, align: 'center', process: AttachCheckBox},
+            {display: 'Edit', name : 'edit', width : 20,height :10, sortable : true, align: 'center',process: EditSyscode},
+    				{display: 'Delete', name : 'delete', width : 30, sortable : true, align: 'center',process: DeleteSyscode},
+    				{display: 'ID', name : 'id', width : 60, sortable : true, align: 'center',process: ShowChilds},
+            {display: 'Syscode', name : 'syscode', width : 90, sortable : true, align: 'left',process: ShowSyscode},
+    				{display: 'Is Active', name : 'isactive', width : 90, sortable : true, align: 'center'}
+            ],
+    			buttons : [
+    				{name: 'Add Parent', bclass: 'add', onpress : AddParentSyscode},
+    				{separator: true}
+    				],
+    			searchitems : [
+    				{display: 'ID', name : 'id'},
+    				{display: 'Syscode', name : 'syscode', isdefault: true}
+    				],
+    			sortname: "id",
+    			sortorder: "asc",
+    			usepager: true,
+    			useRp: true,
+    			rp: 10,			
+    			showTableToggleBtn: true,
+    			width: 372,
+    			height: 431,
+      		title: "Parent Table"    			
+    			});
+         $parentDialog = $('<div></div>')
+                         .load('<%= url_for new_syscode_path %> #dvSyscodeForm')
+                         .dialog({
+                               autoOpen: false,
+                               width:280,
+                               height:280,
+                               title: 'Add Syscode'
+          });
+          
+        $("#flex2").flexigrid({
+      			url: 'http://localhost:3000/syscodes/syscode_child_data',
+      			dataType: 'json',
+      			colModel : [
+      				{display: '<input type="checkbox" id="chkAllFile" onclick="javascript:CheckAllChilds(this);"/>', name: '', width: 20, sortable: false, align: 'center', process: AttachCheckBox},
+              {display: 'Edit', name : 'edit', width : 20, sortable : true, align: 'center',process: EditSyscode},
+      				{display: 'Delete', name : 'delete', width : 30, sortable : true, align: 'center',process: DeleteSyscode},
+      				{display: 'ID', name : 'id', width : 60, sortable : true, align: 'center'},
+              {display: 'Syscode', name : 'syscode', width : 90, sortable : true, align: 'left',process: ShowSyscode},
+              {display: 'Syscode Desc', name : 'syscodedesc', width : 90, sortable : true, align: 'left'},
+              {display: 'Is Active', name : 'isactive', width : 60, sortable : true, align: 'center'},
+    				  {display: 'Parent', name : 'parent', width : 90, sortable : true, align: 'center'}
+      				],
+    			 buttons : [
+    				{name: 'Add Child', bclass: 'add', onpress : AddChildren},
+    				{separator: true}
+    				],
+      			searchitems : [
+      				{display: 'ID', name : 'id'},
+      				{display: 'Syscode', name : 'syscode', isdefault: true}
+      				],
+      			sortname: "id",
+      			sortorder: "asc",
+      			usepager: true,
+      			useRp: true,
+      			rp: 10,			
+      			showTableToggleBtn: true,
+      			width: 580,
+      			height: 400,
+      			title: "Child Table"
+      			});
+    });
+    
+    
+    function AddParentSyscode()
+    {  
+      $("#selectParent").hide();
+      $("#parent").val("0");
+      $parentDialog.dialog('open');      
+    }
+    
+    function AddChildren() {
+      $("#selectParent").show();
+      $parentDialog.dialog('open');
+      $('select[name*="fksyscodeparent"]').change(function () {
+        parentSyscodeVal = $(this).val();  
+        alert(parentSyscodeVal);
+        $("#parent").val(parentSyscodeVal);
+      });
+    }
+    
+    function DeleteSyscode(celDiv, id) {
+        	 $(celDiv).click(function(e) {
+              e.preventDefault();
+              idt=$(this).closest('tr').find('td:nth(3)')[0].textContent;
+              confirm("Are you sure ?", function () {
+          		  window.location.href = "syscodes/destroy/"+idt;	
+          		});   
+           });  
+    }
+
+    function confirm(message, callback) {
+    	$('#confirm').modal({
+    		closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
+    		position: ["20%",],
+    		overlayId: 'confirm-overlay',
+    		containerId: 'confirm-container', 
+    		onShow: function (dialog) {
+    			var modal = this;
+    
+    			$('.message', dialog.data[0]).append(message);
+    
+    			// if the user clicks "yes"
+    			$('.yes', dialog.data[0]).click(function () {
+    				// call the callback
+    				if ($.isFunction(callback)) {
+    					callback.apply();
+    				}
+    				// close the dialog
+    				modal.close(); // or $.modal.close();
+    			});
+    		}
+    	});
+    }
+    
+    function EditSyscode(celDiv, id) {
+        	 $(celDiv).click(function() {
+                idt=$(this).closest('tr').find('td:nth(3)')[0].textContent;
+                escode=$(this).closest('tr').find('td:nth(4)')[0].textContent;
+                var i = document.createElement('a'); 
+                var url = '<%= edit_syscode_path('idt') %> #dvEditSyscode'; //new change
+                url = url.replace('idt',""+(idt*1));   //new change
+                $editDialog = $('<div></div>')
+                         .load(url)
+                         .dialog({
+                               autoOpen: false,
+                               width:400,
+                               height:280,  
+                               title:escode
+                         });    
+              $editDialog.dialog('open');
+           });  
+    }
+
+    function ShowSyscode(celDiv, id) {
+           $(celDiv).addClass("link");
+        	 $(celDiv).click(function() {
+                idt=$(this).closest('tr').find('td:nth(3)')[0].textContent;
+                scode=$(this).closest('tr').find('td:nth(4)')[0].textContent;
+                var i = document.createElement('a'); 
+                var url = '<%= syscode_path('idt') %> #dvShowSyscode'; //new change
+                url = url.replace('idt',""+(idt*1));   //new change
+                $showDialog = $('<div></div>')
+                         .load(url)
+                         .dialog({
+                               autoOpen: false,
+                               width:400,
+                               height:360,  
+                               title:scode
+                         });    
+              $showDialog.dialog('open');
+           });  
+    }
+    
+    function ShowChilds(celDiv,id) {
+        $(celDiv).addClass("link");
+        	 $(celDiv).click(function() {
+              idt=$(this).closest('tr').find('td:nth(3)')[0].textContent;	
+              identity=$(this).closest('tr').find('td:nth(3)')[0].textContent;	
+              sccodedesc=$(this).closest('tr').find('td:nth(4)')[0].textContent;
+              $("#flexi2").hide();              
+              $('#flex3').flexOptions({url: 'http://localhost:3000/syscodes/syscode_display_data?idt='+idt}).flexReload();
+              $("#flex3").flexigrid({                    
+                    url: 'http://localhost:3000/syscodes/syscode_display_data?idt='+idt,
+              			dataType: 'json',
+              			colModel : [
+              			  {display: '<input type="checkbox" id="chkAllFile" onclick="javascript:CheckIdChilds(this);"/>', name: '', width: 20, sortable: false, align: 'center', process: AttachCheckBox},
+                      {display: 'Edit', name : 'edit', width : 20, sortable : true, align: 'center',process: EditSyscode},
+              				{display: 'Delete', name : 'delete', width : 30, sortable : true, align: 'center',process: DeleteSyscode},
+              				{display: 'ID', name : 'id', width : 60, sortable : true, align: 'center'},
+                      {display: 'Syscode', name : 'syscode', width : 90, sortable : true, align: 'left',process: ShowSyscode},
+                      {display: 'Syscode Desc', name : 'syscodedesc', width : 90, sortable : true, align: 'left'},
+                      {display: 'Foreign Key', name : 'foreignkey', width : 60, sortable : true, align: 'center',},
+                      {display: 'Is Active', name : 'isactive', width : 60, sortable : true, align: 'center'}
+              				],
+              			buttons : [
+              				{name: 'Add Child', bclass: 'add', onpress : AddChildSyscode},
+              				{separator: true}          
+              				],
+              			searchitems : [
+              				{display: 'ID', name : 'id'},
+              				{display: 'Syscode', name : 'syscode', isdefault: true}
+              				],
+              			sortname: "id",
+              			sortorder: "asc",
+              			usepager: true,
+              			useRp: true,
+              			rp: 10,			
+              			showTableToggleBtn: true,
+              			title: sccodedesc,
+              			width: 580,
+              			height: 400
+            }); 
+
+          });
+    } 
+    
+    function AddChildSyscode()
+    {  
+      $("#parent").val(identity);
+      $parentDialog.dialog('open');      
+    }
+    
+    function AttachCheckBox(celDiv, id) {    
+      $(celDiv).html('<input id="chkSingle_' + id + '" type="checkbox" value ='+ id +' class="datacb"/>');
+	    $("#flex1 tr").each(function(n) { $(this).addClass("dms");});
+	    $("#flex2 tr").each(function(n) { $(this).addClass("dms");});
+	    $("#flex3 tr").each(function(n) { $(this).addClass("dms");});	    
+    }
+    
+    function CheckAllParent(obj) {
+      $('#flex1 :checkbox').each(function() {this.checked = obj.checked; });      
+    }   
+
+    function CheckAllChilds(obj) {
+      $('#flex2 :checkbox').each(function() {this.checked = obj.checked; });
+    }
+    
+    function CheckIdChilds(obj) {
+      $('#flex3 :checkbox').each(function() {this.checked = obj.checked; });
+    }  
+    
+</script>   
+
+
+<% content_for :sidebar do %> 
+  <div style="clear:both;"></div>
+  <div id="somediv"></div>
+  <div class="Flexgrid">
+    <table id="flex1" style="display:none"></table>  
+  </div>
+<% end %>
+
+<div style="clear:both;"></div>
+<div id="somedivs"></div>
+
+<div class="Flexgrids" id="flexi2">    
+    <table id="flex2" style="display:none"></table>
+</div>
+
+<div class="Flexgrids" id="flexi3">  
+    <table id="flex3" style="display:none"></table> 
+</div>
+
+<div id='confirm'>
+  <div class='header'><span>Confirm</span></div>
+    <div class='message'></div>
+    <div class='buttons'>
+    <div class='no simplemodal-close'>No</div><div class='yes'>Yes</div>
+  </div>
+</div> 

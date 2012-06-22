@@ -1,0 +1,36 @@
+<div id="dvProjectForm">
+  <%= form_for(@project) do |f| %>
+    <% if @project.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
+  
+        <ul>
+        <% @project.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+  
+    <div class="field">
+      <%= f.label :projectname %><br />
+      <%= f.text_field :projectname %>
+    </div>
+    <div class="field">
+      <%= f.label :subprojectof %><br />
+      <%= f.text_field :subprojectof %>
+    </div>
+    <div class="field">
+      <%= f.label :description %><br />
+      <%= f.text_field :description %>
+    </div>
+    <div class="field">
+      <%= f.label :identifier %><br />
+      <%= f.text_field :identifier %>
+    </div>
+    <div class="actions" style="float:right;">
+      <%= f.submit %>
+    </div>
+  <% end %>
+  
+</div>

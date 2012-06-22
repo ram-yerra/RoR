@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vmredmine</title>
+  <%= stylesheet_link_tag    "flexgrid/flexigrid", :media => "all" %>
+  <%= stylesheet_link_tag    "popup/jquery-ui", :media => "all" %>
+  <%= stylesheet_link_tag    "application", :media => "all", :class => "changeme" %>
+  <%= stylesheet_link_tag "rtl", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+  <script type="text/javascript">    
+    if($.cookie("css")) {       
+      	$("link.changeme").attr("href",$.cookie("css")); 
+      }    
+    $(document).ready(function() {
+       if($.cookie("css")) {      	     	
+        $("[rel='"+$.cookie("css")+"']").addClass('circle');	
+      }    
+     	$("#colorchanger a").click(function() { 
+        $("#colorchanger a").removeClass('circle'); 
+        $(this).addClass('circle');
+        $("link.changeme").attr("href",$(this).attr('rel'));
+        $.cookie("css",$(this).attr('rel'), {expires: 365, path: '/'});
+        return false;
+    	 }); 
+    });
+  </script>  
+</head>
+<body>
+<div id="wrapper">
+<div id="wrapper2">
+    <div id="top-menu">
+        <div id="account" style="width:880px;">
+         <%= link_to 'Home', { :controller=>"homes", :action => "index" }, :class => 'menu icon-home' %>
+         <%= link_to 'Users', { :controller=>"users", :action => "index" }, :class => 'menu icon-user' %>
+         <%= link_to 'Projects', { :controller=>"projects", :action => "index" }, :class => 'menu icon-projects' %>
+         <%= link_to 'SysCodes', { :controller=>"syscodes", :action => "index" }, :class => 'menu icon-admin' %>
+         <%= link_to 'SysCodes Dropdown', { :controller=>"syscodes", :action => "selectnew" }, :class => 'menu icon-dropdown' %>
+         <%= link_to 'SysCodes View', { :controller=>"syscodes", :action => "newIndex" }, :class => 'menu icon-dropdown' %>
+         <div id="colorchanger">
+            <a href="#" id="default" class="colorbox default" rel="/assets/application.css"></a>
+          	<a href="#" class="colorbox blue" rel="/assets/application_blue.css"></a>
+          	<a href="#" class="colorbox light_blue" rel="/assets/application_light_blue.css"></a>
+          	<a href="#" class="colorbox green" rel="/assets/application_green.css"></a>
+          	<a href="#" class="colorbox light_green" rel="/assets/application_light_green.css"></a>
+          	<a href="#" class="colorbox grey" rel="/assets/application_grey.css"></a>
+          	<a href="#" class="colorbox light_grey" rel="/assets/application_light_grey.css"></a>
+          	<a href="#" class="colorbox red" rel="/assets/application_red.css"></a>
+          	<a href="#" class="colorbox light_red" rel="/assets/application_light_red.css"></a>  	
+          	<a href="#" class="colorbox orange" rel="/assets/application_orange.css"></a>
+          	<a href="#" class="colorbox brown" rel="/assets/application_brown.css"></a>
+        </div>
+    </div>
+       
+        <div id="login" style="float:right;">
+          <a href="#" id="createUser">Signin</a>
+          <a href="#" id="registerUser">Register</a>
+          <script type="text/javascript">
+
+              var $acntDialog = $('<div></div>').load('<%= url_for new_account_path %> #dvLogin').dialog({
+            			autoOpen: false,
+            			height: 250,
+            			width: 580,
+            			title: 'Login',
+            			modal: true,
+            				Cancel: function() {
+            					$( this ).dialog( "close" );
+            				}
+            		});            
+
+              var $regDialog = $('<div></div>').load('<%= url_for new_user_path %> #dvUserForm').dialog({
+            			autoOpen: false,
+            			height: 500,
+            			width: 450,
+            			title: 'Register',
+            			modal: true,
+            				Cancel: function() {
+            					$( this ).dialog( "close" );
+            				}
+            		}); 
+                
+                $( "#createUser" ).click(function() {
+            				$acntDialog.dialog("open");
+            		});                            		
+                
+                $( "#registerUser" ).click(function() {
+            				$regDialog.dialog("open");
+            		});
+            		
+          </script>
+        </div>        
+            
+    </div>
+
+    <div id="header">
+        <div id="quick-search">       
+        </div>
+        <h1>VMoksha Project Management</h1>
+        <div id="main-menu">
+            <ul>
+              <li><a class="rb-statistics" href="/redmine/rb/statistics">Administration</a></li>
+              <li><a class="blogs" href="/redmine/blogs">Blogs</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="breadcrumb">
+          <a href="/homes"><image src="/assets/home_bc.png" /></a>        
+          <%=
+          s = ""
+          url = request.path.split('?')  #remove extra query string parameters
+          levels = url[0].split('/') #break up url into different levels
+          levels.each_with_index do |level, index|
+            unless level.blank?
+              if index == levels.size-1 || (level == levels[levels.size-2] && levels[levels.size-1].to_i > 0)
+                s += "#{level.gsub(/_/, ' ').upcase}" unless level.to_i > 0
+              else
+                  link = "/"
+                  i = 1
+                  while i <= index
+                    link += "#{levels[i]}/"
+                    i+=1
+                  end
+                  s += "<a href=\"#{link}\">#{level.gsub(/_/, ' ').upcase}</a>"
+              end
+            end
+          end
+          s.html_safe
+          -%>
+        </div>      
+    <div id="main">
+    <div id="sidebar">
+          <%= yield :sidebar %>
+    </div>
+   
+    <div id="content">
+        <div id="list" ><%= yield %></div>  
+				<div style="clear:both;"></div>                 
+    </div>
+    </div>    
+</div>
+
+<div id="ajax-indicator" style="display:none;"><span></span></div>
+	
+<div id="footer">
+  <div class="bgl"><div class="bgr">
+    Powered by Ruby on Rails &copy; 2011-2012 VMOKSHA 
+  </div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

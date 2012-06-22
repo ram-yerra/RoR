@@ -1,0 +1,51 @@
+<div id="dvShowSyscode">
+  <p id="notice"><%= notice %></p>
+  
+  <p>
+    <b>Id:</b>
+    <%= @syscode.id %>
+  </p>
+  
+  <p>
+    <b>Syscode:</b>
+    <%= @syscode.syscode %>
+  </p>
+  
+  <p>
+    <b>Syscode desc:</b>
+    <%= @syscode.syscode_desc %>
+  </p>
+  
+  <p>
+    <b>Isactive:</b>
+    <%= @syscode.isactive %>
+  </p>
+  
+  <p>
+    <b>Fksyscodeparent:</b>
+    <%= @syscode.fksyscodeparent %>
+  </p>
+  
+  <p>
+    <b>Createdby:</b>
+    <%= @syscode.createdby %>
+  </p>
+  
+  <p>
+    <b>Datecreated:</b>
+    <%= @syscode.datecreated %>
+  </p>
+  
+  <p>
+    <b>Datemodified:</b>
+    <%= @syscode.datemodified %>
+  </p>
+  
+  <p>
+    <b>Modifiedby:</b>
+    <%= @syscode.modifiedby %>
+  </p>
+</div>
+
+<%= link_to 'Edit', edit_syscode_path(@syscode) %> |
+<%= link_to 'Back', syscodes_path %>

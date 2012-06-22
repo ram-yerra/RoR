@@ -1,0 +1,147 @@
+<h1>Projects</h1>
+<div style="clear:both;"></div>
+<div id="somediv"></div>
+<div class="Flexgrids">    
+  <script type="text/javascript">
+    var idt=0;  
+    var $dialog;
+    var $editDialog;
+    var $showDialog;
+    var id;
+    $(document).ready(function(){	
+    	$("#flex1").flexigrid({
+    			url: 'http://localhost:3000/projects/project_grid_data',
+    			dataType: 'json',
+    			colModel : [
+    				{display: '<input type="checkbox" id="chkAllFile" onclick="javascript:CheckAll(this);"/>', name: '', width: 20, sortable: false, align: 'center', process: AttachCheckBox},
+            {display: 'Edit', name : 'edit', width : 20, sortable : true, align: 'center',process:EditProject},
+    				{display: 'Delete', name : 'delete', width : 30, sortable : true, align: 'center',process:DeleteProject},
+    				{display: 'ID', name : 'id', width : 20, sortable : true, align: 'center'},
+    				{display: 'Project Name', name : 'projectname', width : 90, sortable : true, align: 'left',process:ShowProject},
+    				{display: 'Sub Project of', name : 'subprojectof', width : 90, sortable : true, align: 'left'},
+    				{display: 'Identifier', name : 'identifier', width : 90, sortable : true, align: 'left'}				
+    				],
+    			buttons : [
+    				{name: 'Add Project', bclass: 'add', onpress : AddProject},
+    				{separator: true}
+    				],
+    			searchitems : [
+    				{display: 'projectname', name : 'projectname'},
+    				{display: 'identifier', name : 'identifier', isdefault: true}
+    				],
+    			sortname: "id",
+    			sortorder: "asc",
+    			usepager: true,
+    			useRp: true,
+    			rp: 10,			
+    			showTableToggleBtn: true,
+    			width: 515,
+    			height: 255
+    			});
+          $dialog = $('<div></div>')
+                         .load('<%= url_for new_project_path %> #dvProjectForm')
+                         .dialog({
+                               autoOpen: false,
+                               width:350,
+                               height:350,
+                               title: 'Add Project'
+                         });       
+    });
+    
+    function AddProject()
+    {                
+      $dialog.dialog('open'); 
+    }
+
+    function EditProject(celDiv, id) {
+        	 $(celDiv).click(function() {
+                idt=$(this).closest('tr').find('td:nth(3)')[0].textContent;
+                pname=$(this).closest('tr').find('td:nth(4)')[0].textContent;
+                var i = document.createElement('a'); 
+                var url = '<%= edit_project_path('idt') %> #dvEditProject'; //new change
+                url = url.replace('idt',""+(idt*1));   //new change
+                $editDialog = $('<div></div>')
+                         .load(url)
+                         .dialog({
+                               autoOpen: false,
+                               width:350,
+                               height:400,  
+                               title: pname
+                         });    
+              $editDialog.dialog('open');
+           });  
+    }
+    
+     function DeleteProject(celDiv, id) {
+        	 $(celDiv).click(function(e) {
+              e.preventDefault();
+              idt=$(this).closest('tr').find('td:nth(3)')[0].textContent;
+              confirm("Are you sure ?", function () {
+          		  window.location.href = "projects/destroy/"+idt;	
+          		});   
+           });  
+    }
+    
+    function confirm(message, callback) {
+    	$('#confirm').modal({
+    		closeHTML: "<a href='#' title='Close' class='modal-close'>x</a>",
+    		position: ["20%",],
+    		overlayId: 'confirm-overlay',
+    		containerId: 'confirm-container', 
+    		onShow: function (dialog) {
+    			var modal = this;
+    
+    			$('.message', dialog.data[0]).append(message);
+    
+    			// if the user clicks "yes"
+    			$('.yes', dialog.data[0]).click(function () {
+    				// call the callback
+    				if ($.isFunction(callback)) {
+    					callback.apply();
+    				}
+    				// close the dialog
+    				modal.close(); // or $.modal.close();
+    			});
+    		}
+    	});
+    }
+    
+    function ShowProject(celDiv, id) {
+           $(celDiv).addClass("link");
+        	 $(celDiv).click(function() {
+                idt=$(this).closest('tr').find('td:nth(3)')[0].textContent;
+                projectname=$(this).closest('tr').find('td:nth(4)')[0].textContent;
+                var i = document.createElement('a'); 
+                var url = '<%= project_path('idt') %> #dvShowProject'; //new change
+                url = url.replace('idt',""+(idt*1));   //new change
+                $showDialog = $('<div></div>')
+                         .load(url)
+                         .dialog({
+                               autoOpen: false,
+                               width:250,
+                               height:250,  
+                               title:projectname
+                         });    
+              $showDialog.dialog('open');
+           });  
+    }
+    
+    function AttachCheckBox(celDiv, id) {    
+      $(celDiv).html('<input id="chkSingle_' + id + '" type="checkbox" value ='+ id +' class="datacb"/>');
+	    $("#flex1 tr").each(function(n) { $(this).addClass("dms");});
+    }
+    
+    function CheckAll(obj) {
+      $('#flex1 :checkbox').each(function() {this.checked = obj.checked; });      
+    } 
+
+  </script>
+<table id="flex1" style="display:none"></table>
+    <div id='confirm'>
+        <div class='header'><span>Confirm</span></div>
+            <div class='message'></div>
+            <div class='buttons'>
+            <div class='no simplemodal-close'>No</div><div class='yes'>Yes</div>
+        </div>
+    </div> 
+</div>
